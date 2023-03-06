@@ -15,6 +15,7 @@ from mesa.datacollection import DataCollector
 
 from prey_predator.agents import Sheep, Wolf, GrassPatch
 from prey_predator.schedule import RandomActivationByBreed
+import numpy as np
 
 
 class WolfSheep(Model):
@@ -68,6 +69,8 @@ class WolfSheep(Model):
         #grass parameters
         self.grass = grass_is_grown
         self.grass_regrowth_time = grass_regrowth_time
+        self.grass_here = 0 
+        self.where_are_grasses = np.zeros((self.height,self.width))
 
         #scheduler and data collector
         self.schedule = RandomActivationByBreed(self)
@@ -104,22 +107,53 @@ class WolfSheep(Model):
             self.grid.place_agent(wolf_agent,(x,y))
  
         # Create grass patches
+
         for x in range(self.grid.width):
             for y in range(self.grid.height):
-                grass_agent = GrassPatch(self.next_id(),
-                                         pos = (x,y),
-                                         model = self,
-                                         fully_grown = self.grass,
-                                         countdown = self.grass_regrowth_time
-                                        )
-                self.schedule.add(grass_agent)
-                self.grid.place_agent(grass_agent,(x,y)) 
+                pass
+                is_here = self.random.choice([True, False])
+                if is_here:
+                    grass_agent = GrassPatch(self.next_id(),
+                                                pos = (x,y),
+                                                model = self,
+                                                fully_grown = self.grass,
+                                                countdown = self.grass_regrowth_time
+                                                )
+                
+                    self.schedule.add(grass_agent)
+                    self.grid.place_agent(grass_agent,(x,y)) 
+                    self.where_are_grasses[x,y] = 1
+                else : 
+                    pass
 
     def step(self):
+
         self.schedule.step()
         # Collect data
         self.datacollector.collect(self)
 
+        for j in range(3):
+            x = self.random.randrange(self.grid.width)
+            y = self.random.randrange(self.grid.height)
+            if self.where_are_grasses[x,y] == 0:
+                self.create_grass((x,y))
+
+    
+    def create_grass(self, pos, fully_grown_value = True):
+        grass_agent = GrassPatch(self.next_id(),
+                                    pos = pos,
+                                    model = self,
+                                    fully_grown = fully_grown_value,
+                                    countdown = self.grass_regrowth_time
+                                    )
+        self.schedule.add(grass_agent)
+        self.grid.place_agent(grass_agent,pos)
+        self.where_are_grasses[pos] = 1
+    
     def run_model(self, step_count=200):
+
         for i in range(step_count):
+            ## take randomly a position where there is no grass
+            
             self.step()
+

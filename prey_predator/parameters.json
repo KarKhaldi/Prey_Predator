@@ -15,6 +15,6 @@
 "initial_wolf_energy":5,
 
 "grass_is_grown": 1,
-"grass_regrowth_time" : 30
+"grass_regrowth_time" : 10
 
 }

@@ -12,13 +12,9 @@ def wolf_sheep_portrayal(agent):
     if agent is None:
         return
     portrayal = {"Shape": "circle",
-                               "Filled": "true",
-                               "Layer": 0,
-                               "r": 0.5}
-    # portrayal["Shape"]="circle"
-    # portrayal["Filled"] ="true"
-    # portrayal["Layer"] = 3
-    # portrayal["r"]= 0.5
+                    "Filled": "true",
+                    "Layer": 0,
+                    "r": 0.5}
     
     if type(agent) is Sheep:
         portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/sheep.png",

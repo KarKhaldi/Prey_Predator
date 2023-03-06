@@ -16,11 +16,25 @@ class Sheep(RandomWalker):
     def __init__(self, unique_id, pos, model, moore, energy=None):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
+        self.pos = pos
     
     def check_if_alive(self):
         if self.energy<=0:
+            
+            cell_contents = self.model.grid.get_cell_list_contents([self.pos])
+            no_grass = True
+            for agent in cell_contents:
+                if isinstance(agent,GrassPatch) :
+                    agent.countdown=max(0,agent.countdown-2)
+                    no_grass = False 
+                break
+
+            if no_grass:
+                self.model.create_grass(self.pos, fully_grown_value= False)
+
             self.model.schedule.remove(self)
             self.model.grid.remove_agent(self)
+
     
     def eat(self):
 
@@ -64,11 +78,24 @@ class Wolf(RandomWalker):
     def __init__(self, unique_id, pos, model, moore, energy=None):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
+        self.pos = pos
 
     def check_if_alive(self):
         if self.energy<=0:
+            cell_contents = self.model.grid.get_cell_list_contents([self.pos])
+            no_grass = True
+            for agent in cell_contents:
+                if isinstance(agent,GrassPatch) :
+                    agent.countdown=max(0,agent.countdown-2)
+                    no_grass = False
+                break
+                
+            if no_grass:
+                self.model.create_grass(self.pos, fully_grown_value= False)
+
             self.model.schedule.remove(self)
             self.model.grid.remove_agent(self)
+
 
     def eat(self):
         cell_contents = self.model.grid.get_cell_list_contents([self.pos])
@@ -117,18 +144,27 @@ class GrassPatch(Agent):
         super().__init__(unique_id, model)
         # ... to be completed
         self.grown = fully_grown
+        self.initial_countdown = countdown
         self.countdown = countdown
+        self.pos = pos
+
+
+
 
     def step(self):
-        # ... to be completed
-
+        # ... to be completed    
         if self.grown == True :
             pass
         elif self.countdown == 0:
             self.grown = True
-            # add something to reset the countdown 
-            
-            #self.countdown -= 1
-            #if self.countdown == 0:
-            
+            self.countdown = self.initial_countdown
+        elif self.countdown > 0 :
+            proba = self.random.random()
+            if proba > 0.15:
+                self.countdown -= 1
+            else :
+                self.model.where_are_grasses[self.pos] = 0
+                self.model.schedule.remove(self)
+                self.model.grid.remove_agent(self)
 
+        
