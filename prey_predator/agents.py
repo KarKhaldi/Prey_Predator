@@ -57,11 +57,30 @@ class Sheep(RandomWalker):
             self.model.schedule.add(new_sheep_agent)
             self.model.grid.place_agent(new_sheep_agent,self.pos)
 
+    def target_grass(self):
+        positions = []
+        possible_positions = self.model.grid.get_neighborhood( self.pos, moore=True, include_center=False)
+        for position in possible_positions:
+            cell_contents = self.model.grid.get_cell_list_contents([position])
+            for agent in cell_contents:
+                if isinstance(agent,GrassPatch) and agent.grown:
+                    positions.append(position)
+                    break
+        if len(positions) > 0:
+            position = self.random.choice(positions)
+        else : 
+            position = self.random.choice(possible_positions)
+
+        self.model.grid.move_agent(self,position)
+
+        
+
+
     def step(self):
         """
         A model step. Move, then eat grass and reproduce.
         """
-        self.random_move()
+        self.target_grass()
         self.energy -= 1
         self.reproduce()
         self.eat()
