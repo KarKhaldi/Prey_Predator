@@ -49,7 +49,6 @@ class RandomActivationByBreed(RandomActivation):
         """
         if by_breed:
             for agent_class in self.agents_by_breed:
-                print(agent_class)
                 self.step_breed(agent_class)
             self.steps += 1
             self.time += 1
@@ -65,7 +64,6 @@ class RandomActivationByBreed(RandomActivation):
         """
         agent_keys = list(self.agents_by_breed[breed].keys())
         self.model.random.shuffle(agent_keys)
-        print(agent_keys)
         for agent_key in agent_keys:
             self.agents_by_breed[breed][agent_key].step()
 

@@ -28,7 +28,7 @@ class Sheep(RandomWalker):
         for agent in cell_contents:
             if isinstance(agent,GrassPatch) and agent.grown :
                 self.energy += self.model.sheep_gain_from_food 
-                agent.fully_grown = False
+                agent.grown = False
                 break
 
     def reproduce(self):
@@ -121,6 +121,7 @@ class GrassPatch(Agent):
 
     def step(self):
         # ... to be completed
+
         if self.grown == True :
             pass
         elif self.countdown == 0:

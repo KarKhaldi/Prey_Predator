@@ -9,7 +9,6 @@ from prey_predator.model import WolfSheep
 def wolf_sheep_portrayal(agent):
     if agent is None:
         return
-
     portrayal = {}
     portrayal["Shape"]="circle"
     portrayal["Filled"] ="true"
@@ -19,16 +18,15 @@ def wolf_sheep_portrayal(agent):
     if type(agent) is Sheep:
         portrayal["Color"]= "grey"
         # ... to be completed
-        print("sheep")
     elif type(agent) is Wolf:
         # ... to be completed
-        portrayal["Color"]= "black"
-        print("wolf")
+        portrayal["Color"]= "red"
     elif type(agent) is GrassPatch:
-        portrayal["Color"]= "green"
-
+        if agent.grown ==True:
+            portrayal["Color"]= "green"
+        else:
+            portrayal["Color"]= "white"
         # ... to be completed
-        #print("grass")
     return portrayal
 
 
