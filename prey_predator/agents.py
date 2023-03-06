@@ -8,7 +8,7 @@ class Sheep(RandomWalker):
 
     The init is the same as the RandomWalker.
     """
-    # to do : change eating_model to not change value of grass 
+    # to do : change eat to not change value of grass 
     # but call a function in grass or from model.
     # cf cours 1 de SMA
     energy = None

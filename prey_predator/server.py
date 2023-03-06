@@ -4,6 +4,7 @@ from mesa.visualization.UserParam import UserSettableParameter
 
 from prey_predator.agents import Wolf, Sheep, GrassPatch
 from prey_predator.model import WolfSheep
+import json
 
 
 def wolf_sheep_portrayal(agent):
@@ -35,9 +36,7 @@ chart_element = ChartModule(
     [{"Label": "Wolves", "Color": "#AA0000"}, {"Label": "Sheep", "Color": "#666666"}]
 )
 
-model_params = {
-    # ... to be completed
-}
+model_params = json.load(open("prey_predator/parameters.json"))
 
 server = ModularServer(
     WolfSheep, [canvas_element, chart_element], "Prey Predator Model", model_params
