@@ -113,16 +113,7 @@ class WolfSheep(Model):
                 pass
                 is_here = self.random.choice([True, False])
                 if is_here:
-                    grass_agent = GrassPatch(self.next_id(),
-                                                pos = (x,y),
-                                                model = self,
-                                                fully_grown = self.grass,
-                                                countdown = self.grass_regrowth_time
-                                                )
-                
-                    self.schedule.add(grass_agent)
-                    self.grid.place_agent(grass_agent,(x,y)) 
-                    self.where_are_grasses[x,y] = 1
+                    self.create_grass((x,y))
                 else : 
                     pass
 
