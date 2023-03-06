@@ -13,7 +13,11 @@ from mesa import Model
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 
-from prey_predator.agents import Sheep, Wolf, GrassPatch
+# maybe put all the agents in a folder ??
+from prey_predator.agents.grass import GrassPatch
+from prey_predator.agents.sheep import Sheep
+from prey_predator.agents.wolf import Wolf
+
 from prey_predator.schedule import RandomActivationByBreed
 import numpy as np
 
@@ -78,6 +82,7 @@ class WolfSheep(Model):
             {
                 "Wolves": lambda m: m.schedule.get_breed_count(Wolf),
                 "Sheep": lambda m: m.schedule.get_breed_count(Sheep),
+                "Grass": lambda m: m.schedule.get_breed_count(GrassPatch),
             }
         )
 

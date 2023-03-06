@@ -2,7 +2,9 @@ from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule
 from mesa.visualization.UserParam import UserSettableParameter
 
-from prey_predator.agents import Wolf, Sheep, GrassPatch
+from prey_predator.agents.wolf import Wolf
+from prey_predator.agents.sheep import Sheep
+from prey_predator.agents.grass import GrassPatch
 from prey_predator.model import WolfSheep
 import os
 import json
@@ -17,23 +19,20 @@ def wolf_sheep_portrayal(agent):
                     "r": 0.5}
     
     if type(agent) is Sheep:
-        portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/sheep.png",
-        # ... to be completed
+        portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/sheep.png",
     elif type(agent) is Wolf:
-        portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/wolf.png",
-
+        portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/wolf.png",
     elif type(agent) is GrassPatch:
         if agent.grown ==True:
-            portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/grass.jpeg",
+            portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/grass.jpeg",
         else:
-            portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/death_grass.jpg",
-        # ... to be completed
+            portrayal["Shape"] = f"{os.path.dirname(os.path.realpath(__file__))}/pictures/death_grass.jpg",
     return portrayal
 
 
 canvas_element = CanvasGrid(wolf_sheep_portrayal, 20, 20, 500, 500)
 chart_element = ChartModule(
-    [{"Label": "Wolves", "Color": "#AA0000"}, {"Label": "Sheep", "Color": "#666666"}]
+    [{"Label": "Wolves", "Color": "#AA0000"}, {"Label": "Sheep", "Color": "#666666"},{"Label": "Grass", "Color": "#519c3e"}]
 )
 
 model_params = json.load(open("prey_predator/parameters.json"))
