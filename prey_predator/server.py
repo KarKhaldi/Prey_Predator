@@ -34,6 +34,8 @@ canvas_element = CanvasGrid(wolf_sheep_portrayal, 20, 20, 500, 500)
 chart_element = ChartModule(
     [{"Label": "Wolves", "Color": "#AA0000"}, {"Label": "Sheep", "Color": "#666666"},{"Label": "Grass", "Color": "#519c3e"}]
 )
+chart_element.canvas_y_max = 300
+
 
 
 model_params = model_params_definition()

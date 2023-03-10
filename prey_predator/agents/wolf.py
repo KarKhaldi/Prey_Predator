@@ -2,7 +2,7 @@ from mesa import Agent
 from prey_predator.random_walk import RandomWalker
 from prey_predator.agents.grass import GrassPatch
 from prey_predator.agents.sheep import Sheep
-
+import numpy as np
 
 
 class Wolf(RandomWalker):
@@ -15,6 +15,8 @@ class Wolf(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.pos = pos
+        self.wants_to_reproduce = np.random.choice([True,False],1,p=[0.2,0.8])
+
 
     def check_if_alive(self):
         if self.energy<=0:
@@ -44,7 +46,7 @@ class Wolf(RandomWalker):
         if self.energy >= 15 :
             return
         else :
-            self.energy += max(agent.energy,3)
+            self.energy += max(agent.energy//2,3)
             print()
             self.model.schedule.remove(agent)
             self.model.grid.remove_agent(agent)
@@ -57,6 +59,24 @@ class Wolf(RandomWalker):
                 self.capped_wolf_energy(agent)
                 #self.standard_wolf_energy(self,agent)
                 break
+
+    def closest_sheep_move(self):
+        positions = []
+        possible_positions = self.model.grid.get_neighborhood( self.pos, moore=True, include_center=False)
+        for position in possible_positions:
+            cell_contents = self.model.grid.get_cell_list_contents([position])
+            for agent in cell_contents:
+                if isinstance(agent,Sheep):
+                    positions.append(position)
+                    break
+        if len(positions) > 0:
+            position = self.random.choice(positions)
+        else : 
+            position = self.random.choice(possible_positions)
+
+        self.model.grid.move_agent(self,position)
+
+
 
 
     def reproduce(self):
@@ -71,10 +91,60 @@ class Wolf(RandomWalker):
             self.model.schedule.add(new_wolf_agent)
             self.model.grid.place_agent(new_wolf_agent,self.pos)
 
+    
+    def realistic_reproduction(self):
+        """
+        Modelising reproduction with 2 wolfs rather than 1...
+        """
+        if self.energy > self.model.wolf_reproduction_minimal_energy :
+            cell_contents = self.model.grid.get_cell_list_contents([self.pos])
+            for agent in cell_contents:
+                    if isinstance(agent,Wolf):
+                        #if agent.energy >= agent.model.wolf_reproduction_minimal_energy:
+                        #agent.energy //= 2
+                        self.energy //= 2
+                        new_wolf_agent = Wolf(unique_id = self.model.next_id(),
+                                                pos = self.pos,
+                                                model = self.model,
+                                                moore = self.moore,
+                                                energy= self.energy)
+                        self.model.schedule.add(new_wolf_agent)
+                        self.model.grid.place_agent(new_wolf_agent,self.pos)
+                        break # can only reproduce once per timestep
+
+
+
+    def move_to_reproduce(self):
+        """
+        If can reproduce, search for a mate in the closest cells that can also reproduce. If not found, will try to eat closest sheep
+        """
+        if self.energy > self.model.wolf_reproduction_minimal_energy:
+            positions = []
+            possible_positions = self.model.grid.get_neighborhood( self.pos, moore=True, include_center=False)
+            for position in possible_positions:
+                cell_contents = self.model.grid.get_cell_list_contents([position])
+                for agent in cell_contents:
+                    if isinstance(agent,Wolf):
+                        if agent.energy > agent.model.wolf_reproduction_minimal_energy :
+                            positions.append(position)
+                            break
+            if len(positions) > 0:
+                position = self.random.choice(positions)
+                self.model.grid.move_agent(self,position)
+            else : 
+                self.closest_sheep_move()
+            
 
     def step(self):
-        self.random_move()
+        #self.random_move()
+        if self.wants_to_reproduce:
+            self.move_to_reproduce()
+        else:
+            print("wants to eat")
+            self.closest_sheep_move()
+        
         self.energy -=1
-        self.reproduce()
+        self.realistic_reproduction()
+        #self.reproduce()
         self.eat()
         self.check_if_alive()

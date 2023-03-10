@@ -69,6 +69,7 @@ class WolfSheep(Model):
         self.wolf_reproduce = wolf_reproduce
         self.wolf_gain_from_food = wolf_gain_from_food
         self.initial_wolf_energy = initial_wolf_energy
+        self.wolf_reproduction_minimal_energy = 5
 
         #grass parameters
         self.grass = grass_is_grown
@@ -130,7 +131,7 @@ class WolfSheep(Model):
         # Collect data
         self.datacollector.collect(self)
 
-        for j in range(3):
+        for j in range(20):
             x = self.random.randrange(self.grid.width)
             y = self.random.randrange(self.grid.height)
             if self.where_are_grasses[x,y] == 0:
@@ -152,5 +153,6 @@ class WolfSheep(Model):
 
         for i in range(step_count):
             ## take randomly a position where there is no grass
+            
             self.step()
 
