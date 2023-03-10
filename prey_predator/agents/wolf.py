@@ -1,7 +1,7 @@
 from mesa import Agent
 from prey_predator.random_walk import RandomWalker
 from prey_predator.agents.grass import GrassPatch
-from prey_predator.agents.sheep import Sheep
+import prey_predator.agents.sheep as sheep
 import numpy as np
 
 
@@ -15,7 +15,6 @@ class Wolf(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.pos = pos
-        self.wants_to_reproduce = np.random.choice([True,False],1,p=[0.2,0.8])
 
 
     def check_if_alive(self):
@@ -43,7 +42,7 @@ class Wolf(RandomWalker):
         """
         If wolf is full of energy, do not eat sheep. Else, eat sheep and obtain part of its' energy.
         """
-        if self.energy >= 15 :
+        if self.energy >= 10 :
             return
         else :
             self.energy += max(agent.energy//2,3)
@@ -54,7 +53,7 @@ class Wolf(RandomWalker):
     def eat(self):
         cell_contents = self.model.grid.get_cell_list_contents([self.pos])
         for agent in cell_contents:
-            if isinstance(agent,Sheep) :
+            if isinstance(agent,sheep.Sheep) :
                 self.capped_wolf_energy(agent)
                 #self.standard_wolf_energy(self,agent)
                 break
@@ -65,7 +64,7 @@ class Wolf(RandomWalker):
         for position in possible_positions:
             cell_contents = self.model.grid.get_cell_list_contents([position])
             for agent in cell_contents:
-                if isinstance(agent,Sheep):
+                if isinstance(agent,sheep.Sheep):
                     positions.append(position)
                     break
         if len(positions) > 0:
@@ -79,6 +78,9 @@ class Wolf(RandomWalker):
 
 
     def reproduce(self):
+        """
+        Initial reproduction process, if energy is sufficient, reproduce alone.
+        """
         # if energy > 2 : reproduce ... 
         if self.energy >=2 and self.random.random() <= self.model.wolf_reproduce :
             self.energy //= 2
@@ -99,8 +101,7 @@ class Wolf(RandomWalker):
             cell_contents = self.model.grid.get_cell_list_contents([self.pos])
             for agent in cell_contents:
                     if isinstance(agent,Wolf):
-                        #if agent.energy >= agent.model.wolf_reproduction_minimal_energy:
-                        #agent.energy //= 2
+
                         self.energy //= 2
                         new_wolf_agent = Wolf(unique_id = self.model.next_id(),
                                                 pos = self.pos,
@@ -135,14 +136,17 @@ class Wolf(RandomWalker):
             
 
     def step(self):
-        #self.random_move()
+        
+        self.wants_to_reproduce = np.random.choice([True,False],1,p=[0.2,0.8])
+
         if self.wants_to_reproduce:
+            print("want to reproduce")
             self.move_to_reproduce()
+            self.energy -=3
+            self.realistic_reproduction()
         else:
             self.closest_sheep_move()
-        
-        self.energy -=1
-        self.realistic_reproduction()
-        #self.reproduce()
+            self.energy -=1
+    
         self.eat()
         self.check_if_alive()
