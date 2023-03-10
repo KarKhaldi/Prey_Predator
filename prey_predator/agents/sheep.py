@@ -1,6 +1,7 @@
 from mesa import Agent
 from prey_predator.random_walk import RandomWalker
 from prey_predator.agents.grass import GrassPatch
+# from prey_predator.agents.wolf import Wolf
 
 
 
@@ -74,15 +75,36 @@ class Sheep(RandomWalker):
             position = self.random.choice(possible_positions)
 
         self.model.grid.move_agent(self,position)
-
+    
+    def avoid_wolves(self):
+        positions = []
+        possible_positions = self.model.grid.get_neighborhood( self.pos, moore=True, include_center=False)
+        for position in possible_positions:
+            cell_contents = self.model.grid.get_cell_list_contents([position])
+            print(cell_contents)
+            if 'Wolf' in str(cell_contents):
+                print('on est avec des wolfs')
+                pass 
+            else : 
+                positions.append(position)
         
+        if len(positions) > 0:
+            position = self.random.choice(positions)
+            self.model.grid.move_agent(self,position)
+        else : 
+            self.target_grass()
 
 
     def step(self):
         """
         A model step. Move, then eat grass and reproduce.
         """
-        self.target_grass()
+        proba = self.random.random() 
+        if proba > 0.5: 
+            self.target_grass()
+        else : 
+            self.avoid_wolves()
+        # self.target_grass()
         self.energy -= 1
         self.reproduce()
         self.eat()

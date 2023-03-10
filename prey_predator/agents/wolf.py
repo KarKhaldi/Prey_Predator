@@ -47,7 +47,6 @@ class Wolf(RandomWalker):
             return
         else :
             self.energy += max(agent.energy//2,3)
-            print()
             self.model.schedule.remove(agent)
             self.model.grid.remove_agent(agent)
             return
@@ -140,7 +139,6 @@ class Wolf(RandomWalker):
         if self.wants_to_reproduce:
             self.move_to_reproduce()
         else:
-            print("wants to eat")
             self.closest_sheep_move()
         
         self.energy -=1
