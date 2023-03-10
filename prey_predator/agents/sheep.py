@@ -81,9 +81,7 @@ class Sheep(RandomWalker):
         possible_positions = self.model.grid.get_neighborhood( self.pos, moore=True, include_center=False)
         for position in possible_positions:
             cell_contents = self.model.grid.get_cell_list_contents([position])
-            print(cell_contents)
             if 'Wolf' in str(cell_contents):
-                print('on est avec des wolfs')
                 pass 
             else : 
                 positions.append(position)
