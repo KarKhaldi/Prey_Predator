@@ -17,7 +17,6 @@ class GrassPatch(Agent):
             countdown: Time for the patch of grass to be fully grown again
         """
         super().__init__(unique_id, model)
-        # ... to be completed
         self.grown = fully_grown
         self.initial_countdown = countdown
         self.countdown = countdown
@@ -27,12 +26,16 @@ class GrassPatch(Agent):
 
 
     def step(self):
-        # ... to be completed    
+        """ 
+        function that deals with the state of the grass patch
+        """
         if self.grown == True :
             pass
+        # if the countdown is 0 the dead grass can be changed into a green one (grown one)
         elif self.countdown == 0:
             self.grown = True
             self.countdown = self.initial_countdown
+        # in the case where the grass is not fully grown, it will be removed from the model with a certain probability
         elif self.countdown > 0 :
             proba = self.random.random()
             if proba > 0.15:

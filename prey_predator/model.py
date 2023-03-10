@@ -13,7 +13,6 @@ from mesa import Model
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 
-# maybe put all the agents in a folder ??
 from prey_predator.agents.grass import GrassPatch
 from prey_predator.agents.sheep import Sheep
 from prey_predator.agents.wolf import Wolf
@@ -99,6 +98,7 @@ class WolfSheep(Model):
                                 )
             self.schedule.add(sheep_agent)
             self.grid.place_agent(sheep_agent,(x,y))
+
         # Create wolves
         for i in range(self.initial_wolves ):
             x = self.random.randrange(self.grid.width)
@@ -112,8 +112,7 @@ class WolfSheep(Model):
             self.schedule.add(wolf_agent)
             self.grid.place_agent(wolf_agent,(x,y))
  
-        # Create grass patches
-
+        # we try every position in the grid and we randomly create grass in that position
         for x in range(self.grid.width):
             for y in range(self.grid.height):
                 pass
@@ -131,6 +130,7 @@ class WolfSheep(Model):
         # Collect data
         self.datacollector.collect(self)
 
+        # Boucle to allow to grow new grass in the grid 
         for j in range(20):
             x = self.random.randrange(self.grid.width)
             y = self.random.randrange(self.grid.height)
@@ -139,6 +139,9 @@ class WolfSheep(Model):
 
     
     def create_grass(self, pos, fully_grown_value = True):
+        """  
+        Function to create grass in the grid, and add it to the where_are_grasses array to keep track of the grasses
+        """
         grass_agent = GrassPatch(self.next_id(),
                                     pos = pos,
                                     model = self,
@@ -152,7 +155,5 @@ class WolfSheep(Model):
     def run_model(self, step_count=200):
 
         for i in range(step_count):
-            ## take randomly a position where there is no grass
-            
             self.step()
 
