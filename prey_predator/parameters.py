@@ -3,8 +3,8 @@ from mesa.visualization.UserParam import UserSettableParameter
 
 def model_params_definition():
     model_params = {'description': 'A model for simulating wolf and sheep (predator-prey) ecosystem modelling.', 
-                'height': 20, #UserSettableParameter("slider", "height", 20, 1, 30, 1),
-                'width': 20, #UserSettableParameter("slider", "width", 20, 1, 30, 1),
+                'height': 20,
+                'width': 20, 
                 'initial_sheep':  UserSettableParameter("slider", "initial_sheep", 100, 20, 200, 5),
                 'sheep_reproduce': UserSettableParameter("slider", "sheep_reproduce", 0.05, 0.01, 1, 0.01),
                 'sheep_gain_from_food': UserSettableParameter("slider", "sheep_gain_from_food", 4, 1, 30, 1), 

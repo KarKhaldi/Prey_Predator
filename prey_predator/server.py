@@ -7,10 +7,12 @@ from prey_predator.agents.sheep import Sheep
 from prey_predator.agents.grass import GrassPatch
 from prey_predator.model import WolfSheep
 import os
-import json
 
 
 def wolf_sheep_portrayal(agent):
+    """
+    Creates wolf/sheep/grass picture to add to the grid.
+    """
     if agent is None:
         return
     portrayal = {"Shape": "circle",
@@ -31,13 +33,15 @@ def wolf_sheep_portrayal(agent):
 
 
 canvas_element = CanvasGrid(wolf_sheep_portrayal, 20, 20, 500, 500)
+
+# colors for Wolves, Sheeps, and Grass
 chart_element = ChartModule(
     [{"Label": "Wolves", "Color": "#AA0000"}, {"Label": "Sheep", "Color": "#666666"},{"Label": "Grass", "Color": "#519c3e"}]
 )
 chart_element.canvas_y_max = 300
 
 
-
+# adding model params, with slides to change easily initializations.
 model_params = model_params_definition()
 
 
