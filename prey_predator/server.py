@@ -1,7 +1,7 @@
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import CanvasGrid, ChartModule
 from mesa.visualization.UserParam import UserSettableParameter
-
+from prey_predator.parameters import model_params_definition
 from prey_predator.agents.wolf import Wolf
 from prey_predator.agents.sheep import Sheep
 from prey_predator.agents.grass import GrassPatch
@@ -35,7 +35,9 @@ chart_element = ChartModule(
     [{"Label": "Wolves", "Color": "#AA0000"}, {"Label": "Sheep", "Color": "#666666"},{"Label": "Grass", "Color": "#519c3e"}]
 )
 
-model_params = json.load(open("prey_predator/parameters.json"))
+
+model_params = model_params_definition()
+
 
 server = ModularServer(
     WolfSheep, [canvas_element, chart_element], "Prey Predator Model", model_params

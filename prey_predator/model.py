@@ -122,6 +122,8 @@ class WolfSheep(Model):
                 else : 
                     pass
 
+
+
     def step(self):
 
         self.schedule.step()
@@ -150,6 +152,5 @@ class WolfSheep(Model):
 
         for i in range(step_count):
             ## take randomly a position where there is no grass
-            
             self.step()
 
