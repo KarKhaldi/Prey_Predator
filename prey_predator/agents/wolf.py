@@ -142,9 +142,10 @@ class Wolf(RandomWalker):
         if self.wants_to_reproduce:
             print("want to reproduce")
             self.move_to_reproduce()
-            self.energy -=3
+            self.energy -=1
             self.realistic_reproduction()
         else:
+            print("wants to eat")
             self.closest_sheep_move()
             self.energy -=1
     
